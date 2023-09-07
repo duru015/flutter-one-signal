@@ -16,10 +16,10 @@ class AppNotificationService {
       event.preventDefault();
 
       /// Do async work
-      if (notificationData["id"] == "1234") {
+      // if (notificationData["id"] == "1234") {
         /// notification.display() to display after preventing default
         event.notification.display();
-      }
+      // }
     });
   }
 
