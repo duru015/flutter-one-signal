@@ -1,6 +1,7 @@
+import 'package:ecrommerce/services/notification_servcie.dart';
 import 'package:flutter/material.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
-const oneSignalAppId = "";
+const oneSignalAppId = "d98dbd0f-eaf9-4bd6-807c-b56038aac2d0";
 
 void main() {
    WidgetsFlutterBinding.ensureInitialized();
@@ -60,16 +61,23 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
+  void initState() {
+    super.initState();
+    initPlatformState();
+  }
 
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
+  Future<void> initPlatformState() async {
+    if (!mounted) return;
+    //CHECK PERMISSION IS AUTHORIZED OR NOT
+    final isEnabled =
+        await AppNotificationService.notificationPermissionCheck();
+
+    if (isEnabled == OSNotificationPermission.denied) {
+      //REQUEST PERMISION TO THE USER
+      await AppNotificationService.requestNotificationPermission();
+    }
+
+    AppNotificationService.hanldeNotificationClick();
   }
 
   @override
@@ -119,11 +127,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+   
     );
   }
 }
